@@ -1,0 +1,11 @@
+.recommendation .ant-list-split .ant-list-item{
+    border-bottom: none !important;
+}
+.trunc_line {
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }

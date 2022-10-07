@@ -1,0 +1,29 @@
+.ant-card-cover img{
+    height: 200px !important;
+}
+
+.ant-card-meta-title{
+  margin-bottom: 0 !important;
+}
+.ant-card-body{
+  padding: 15px !important;
+}
+.ant-card-meta-description{
+  padding-top: 2px!important;
+}
+.no_show_menu{
+  display: none !important;
+}
+.video_card .ant-card-cover{
+  opacity: 1 !important;
+}
+.show_menu .anticon-menu-fold{
+  margin-left: 14.5rem !important;
+}
+.video_card .ant-card-meta{
+  opacity: 1 !important;
+}
+.video_card{
+  transition: transform .4s ease-out !important;
+  transform: translate(0, -5px) !important;
+}

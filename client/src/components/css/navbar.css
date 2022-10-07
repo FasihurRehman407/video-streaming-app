@@ -1,0 +1,29 @@
+.navbarr {
+  background-color: white;
+  padding: 1rem 0.5rem;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+.navbarr .ant-btn-primary{
+  display: none;
+}
+.logo {
+  height: 40px;
+  width: 110px;
+}
+.test .ant-input{
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.test .ant-input-group-addon{
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.nav_drop{
+  cursor: pointer !important;
+}
+@media only screen and (max-width: 600px) and (min-width: 200px)  {
+  .navbarr .ant-btn-primary{
+    display: block;
+  }
+}

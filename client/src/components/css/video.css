@@ -1,0 +1,15 @@
+.ant-input-affix-wrapper .ant-input{
+    border: none !important;
+    border-bottom: 1px solid #d9d9d9 !important;
+}
+.ant-input:focus{
+    box-shadow: none !important;
+    outline: none !important;
+}
+.add_comment{
+    position: relative;
+    left: 95%;
+    top: -60%;
+    z-index:9999;
+    cursor: pointer;
+}
