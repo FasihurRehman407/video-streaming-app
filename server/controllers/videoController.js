@@ -141,7 +141,7 @@ const multerFilter=( req, file, cb ) => {
         cb( null, true )
     }
     else {
-        cb( new AppError( "Only image or video file can be uploaded", 400 ),false );
+        cb( new AppError( "Only image can be uploaded", 400 ),false );
     }
 }
 

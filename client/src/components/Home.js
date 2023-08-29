@@ -27,7 +27,7 @@ export default function Home({type}) {
   </div>:
   <div className='row'>
   {videos && videos.map((vid,i)=>(
-    <div key={i} className='col-3 mx-4 my-3'>
+    <div key={i} className='col-3 my-3'>
       <VidCard key={i} video={vid}/>
     </div>
   ))}

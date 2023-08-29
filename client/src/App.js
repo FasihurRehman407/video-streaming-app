@@ -34,9 +34,14 @@ function App() {
         <Route exact path='home' element={
         <Home type="random"/>
       }/>
+
        <Route exact path='explore' element={
-        <Home type="trend"/>
-      }/>  
+         <ProtectedRoutes auth={id? true: false}>
+         <Home type="trend"/>
+        </ProtectedRoutes>
+        }/>  
+
+
       <Route exact  path='subscription' element={
           <Home type="subvids"/>
       }/> 
@@ -44,9 +49,7 @@ function App() {
         <Library/>
       }/>
       <Route exact path='signup' element={
-        <ProtectedRoutes auth={id? true: false}>
           <Signup/>
-        </ProtectedRoutes>
       }/>
       <Route exact path='video'>
         <Route path=":id" element={<Video/>}/>

@@ -1,4 +1,4 @@
-import React , {useState, useContext} from 'react'
+import React , {useState, useContext, useEffect} from 'react'
 import { Drawer, Button ,message,Upload,Input , Dropdown, Form,Menu, Avatar, Modal} from "antd";
 import { MenuOutlined,InboxOutlined, PlusOutlined,MinusCircleOutlined , SearchOutlined ,UserOutlined, LogoutOutlined, SettingFilled, VideoCameraOutlined, BellOutlined} from "@ant-design/icons";
 import appContext from '../context/appContext';
@@ -6,7 +6,7 @@ import { useGetUserQuery } from '../services/nodeApi';
 import jwtDecode from 'jwt-decode';
 import './css/navbar.css';
 import { Link , useNavigate} from 'react-router-dom';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, uploadBytes } from "firebase/storage";
 import app from './../firebase.js';
 
 export default function Navbar({menu}) {
@@ -15,6 +15,8 @@ export default function Navbar({menu}) {
   const { Cookies } = useContext(appContext);
   const [visible, setVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [video, setVideo] = useState(undefined);
+  const [loading , setLoading]= useState(0);
   let id;
   if(Cookies.get('jwt')){
    id = jwtDecode(Cookies.get('jwt')).id;
@@ -23,42 +25,22 @@ export default function Navbar({menu}) {
 
   const [form] = Form.useForm();
 
-  const videoProps = {
-    name: 'file',
-    multiple: false,
-    action:'http://127.0.0.1:3001/api/v1/videos/trend',
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
-    },
-  };
-
   const uploadVideo = (file)=>{
     const storage = getStorage(app);
-    const storageRef = ref(storage, file.name);
+    const fileName = 'video' + id + Date.now();
+    const storageRef = ref(storage, fileName);
     const uploadVid = uploadBytesResumable(storageRef, file);
-
     uploadVid.on('state_changed', 
   (snapshot) => {
     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    setLoading(progress);
     console.log('Upload is ' + progress + '% done');
     switch (snapshot.state) {
       case 'paused':
-        console.log('Upload is paused');
+        // console.log('Upload is paused');
         break;
       case 'running':
-        console.log('Upload is running');
+        // console.log('Upload is running');
         break;
       default:
         break;
@@ -73,11 +55,47 @@ export default function Navbar({menu}) {
     });
   }
 );
-
-  }
+}
+  const videoProps = {
+    name: 'file',
+    multiple: false,
+    onChange(info) {
+      setVideo(info.file);
+      const { status } = info.file;
+      if (status !== 'uploading') {
+      }
+  
+      if (status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    onDrop(e) {
+      setVideo(e.dataTransfer.files[0])
+      uploadVideo(e.dataTransfer.files[0]);
+    },
+    beforeUpload(file) {
+      uploadVideo(file);
+    },
+    accept: '.mp4,.webm,.avi',
+    progress: {
+      strokeColor: {
+        '0%': '#108ee9',
+        '100%': '#87d068',
+      },
+      strokeWidth: 3,
+      format: percent => percent && `${parseFloat(percent.toFixed(2))}%`,
+    },
+  };
 
   const showModal = () => {
     setIsModalOpen(true);
+  };
+
+  const dummyRequest = ({onSuccess}) => {
+  onSuccess('ok');
+   return true;
   };
 
   const handleModalOk = () => {
@@ -98,7 +116,8 @@ export default function Navbar({menu}) {
 
   const handleLogout = () =>{
     Cookies.remove('jwt');
-    window.location.reload();
+    navigate('/dashboard/signup')
+    // window.location.reload();
   }
 
 
@@ -222,7 +241,9 @@ export default function Navbar({menu}) {
              name="Video"
              label="Video"
             >
-            <Dragger {...videoProps}>
+            <Dragger {...videoProps}
+            customRequest={dummyRequest}
+            >
     <p className="ant-upload-drag-icon">
       <InboxOutlined />
     </p>
@@ -231,12 +252,12 @@ export default function Navbar({menu}) {
             </Form.Item>
             <Form.Item
              name="Thumbnail"
-             label="Thumbnail">
-           <Dragger 
-           action='http://localhost:3001'
+             label="Thumbnail"
+>           <Dragger 
            multiple={false} 
            accept='.png,.jpeg,.jpg' 
            listType='picture' 
+           customRequest={dummyRequest}
            >
            <p className="ant-upload-drag-icon">
       <PlusOutlined />
